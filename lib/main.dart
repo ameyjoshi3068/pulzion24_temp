@@ -23,34 +23,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyCurveX extends Curve {
-  @override
-  double transformInternal(double t) {
-    // t = 0;
-    if (t < 0.5) {
-      var val = cos(2 * pi * t) * 2;
-      return val;
-    } else {
-      var val = sin(2 * pi * t) * 2;
-      return val;
-    }
-  }
-}
-
-class MyCurveY extends Curve {
-  @override
-  double transformInternal(double t) {
-    // t = 0;
-    if (t < 0.5) {
-      var val = sin(2 * pi * (t - 0.25)) * 2;
-      return val;
-    } else {
-      var val = cos(2 * pi * t) * 2;
-      return val;
-    }
-  }
-}
-
 class TranslateImage extends StatefulWidget {
   const TranslateImage({super.key});
 
@@ -61,27 +33,27 @@ class TranslateImage extends StatefulWidget {
 class _TranslateImageState extends State<TranslateImage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<Offset> _xTranslation;
-  late Animation<Offset> _yTranslation;
+  late Animation<Offset> _Translation1;
+  late Animation<Offset> _Translation2;
+  // double width = 1080, height = 1920;
 
   @override
   void initState() {
     super.initState();
+
     _animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
 
-    _xTranslation = Tween(begin: Offset(2, 0), end: Offset(4, 0)).animate(
-        CurvedAnimation(
-            parent: _animationController, curve: Curves.easeInOutExpo));
-    _yTranslation = Tween(begin: Offset(0, 4), end: Offset(0, 6)).animate(
-        CurvedAnimation(
-            parent: _animationController, curve: Curves.easeInOutExpo));
+    _Translation1 = Tween(begin: Offset(4, 8), end: Offset(0, 0)).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.linear));
+    _Translation2 = Tween(begin: Offset(0, 8), end: Offset(4, 0)).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.linear));
   }
 
   @override
   void dispose() {
-    _xTranslation;
-    _yTranslation;
+    _Translation1;
+    _Translation2;
     _animationController.dispose();
     super.dispose();
   }
@@ -92,13 +64,17 @@ class _TranslateImageState extends State<TranslateImage>
       body: Stack(
         children: [
           SlideTransition(
-            position: _yTranslation,
-            child: SlideTransition(
-              position: _xTranslation,
-              child: Container(
-                width: 100,
-                child: Image.asset("garuda_logo.png"),
-              ),
+            position: _Translation1,
+            child: Container(
+              width: 100,
+              child: Image.asset("logo.png"),
+            ),
+          ),
+          SlideTransition(
+            position: _Translation2,
+            child: Container(
+              width: 100,
+              child: Image.asset("logo.png"),
             ),
           ),
         ],
